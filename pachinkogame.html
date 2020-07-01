@@ -1,0 +1,375 @@
+<html>
+	<head>
+		<style>
+			canvas{
+				   border  : 1px solid black;
+				  }
+		</style>
+	</head>
+	<body>
+		<canvas width="1000" height="1000" id="canvas">
+		<script>
+			
+			// global variables 
+			var ball=null;
+			var balls = new Array();
+			var num,randomX;
+			var i,j;
+			var pin=null;
+			var pins=new Array();
+			var angle;
+			var points=0;
+			
+			const canvas = document.getElementById("canvas");
+			const context = canvas.getContext('2d');
+			
+			// class that creates balls
+			
+			class Ball{
+			
+				constructor(centerX,centerY,radius,speed,scored){
+					this._centerX=centerX;
+					this._centerY=centerY;
+					this._radius=radius;
+					this._speed=speed;
+					this._scored=scored;
+				}
+				
+				set centerX(newCenterX){
+					this._centerX=newCenterX;
+				}
+				
+				get centerX(){
+					return this._centerX;
+				}
+				
+				set centerY(newCenterY){
+					this._centerY=newCenterY;
+				}
+				
+				get centerY(){
+					return this._centerY;
+				}
+				
+				set radius(newRadius){
+					this._radius=newRadius;
+				}
+				get radius(){
+					return this._radius;
+				}
+				
+				set speed(newSpeed){
+					this._speed=newSpeed;
+				}
+				
+				get speed(){
+					return this._speed;
+				}
+				
+				set scored(newScored){
+					this._scored=newScored;
+				}
+				
+				get scored(){
+					return this._scored;
+				}
+			}
+			
+			// class that creates pin
+			
+			class Pin{
+			
+				constructor(centerX,centerY,radius){
+					this._centerX=centerX;
+					this._centerY=centerY;
+					this._radius=radius;
+				}
+				
+				set centerX(newCenterX){
+					this._centerX=newCenterX;
+				}
+				
+				get centerX(){
+					return this._centerX;
+				}
+				
+				set centerY(newCenterY){
+					this._centerY=newCenterY;
+				}
+				
+				get centerY(){
+					return this._centerY;
+				}
+				
+				set radius(newRadius){
+					this._radius=newRadius
+				}
+				get radius(){
+					return this._radius;
+				}
+				
+			}
+			
+			function init(){
+				 
+				// create new balls 
+				canvas.addEventListener("click",function(){
+				
+					num= Math.floor(Math.random()*19)+1;
+					
+					if(num == 1){
+						randomX=25;
+					}
+					else if(num == 2){
+						randomX=75;
+					}
+					else if(num == 3){
+						randomX=125;
+					}
+					else if(num == 4){
+						randomX=175;
+					}
+					else if(num == 5){
+						randomX=225;
+					}
+					else if(num == 6){
+						randomX=275;
+					}
+					else if(num == 7){
+						randomX=325;
+					}
+					else if(num == 8){
+						randomX=375;
+					}
+					else if(num == 9){
+						randomX=425;
+					}
+					else if(num == 10){
+						randomX=475;
+					}
+					else if(num == 11){
+						randomX=525;
+					}
+					else if(num == 12){
+						randomX=575;
+					}
+					else if(num == 13){
+						randomX=625;
+					}
+					else if(num == 14){
+						randomX=675;
+					}
+					
+					else if(num == 15){
+						randomX=725;
+					}
+					else if(num == 1){
+						randomX=775;
+					}
+					else if(num == 16){
+						randomX=825;
+					}
+					else if(num == 17){
+						randomX=875;
+					}
+					else if(num == 18){
+						randomX=925;
+					}
+					else if(num == 19){
+						randomX=975;
+					}
+					
+					ball = new Ball(randomX,0,25,0.025,false);
+					balls.push(ball);
+				
+				});
+				
+				// create pins
+				for(i=1;i<=9;i++){
+					
+					if(i%2 == 0){
+						for(j=0;j<=9;j++){
+							pin = new Pin(j*100+25,i*100,25);
+							pins.push(pin);
+						}
+					}
+					else if(i%2 == 1){
+						for(j=0;j<=9;j++){
+							pin = new Pin(j*100+75,i*100,25);
+							pins.push(pin);
+						}
+					}
+					
+				}
+				
+				setInterval(updateBoard,10);
+				setInterval(score,1000);
+				setInterval(deleteObjects,1000);
+				
+			}
+			
+			function updateBoard(){
+				
+				context.clearRect(0,0,canvas.width,canvas.height);
+				
+				context.fillStyle="grey";
+				
+				// draw pins 
+				for(i=0;i<=pins.length-1;i++){
+					
+					context.beginPath();
+					context.arc(pins[i].centerX,pins[i].centerY,pins[i].radius,0,2*Math.PI);
+					context.fill();
+					
+					
+				}
+				
+				context.fillStyle="blue";
+				
+				// draw balls 
+				for(i=0;i<=balls.length-1;i++){
+					
+					context.beginPath();
+					context.arc(balls[i].centerX,balls[i].centerY,balls[i].radius,0,2*Math.PI);
+					context.fill();
+					
+					
+					// update ball position
+					for(j=0;j<=pins.length-1;j++){
+						
+						if(0<=pins[j].centerY-balls[i].centerY && pins[j].centerY-balls[i].centerY<=50 &&balls[i].centerX==pins[j].centerX ){
+							angle=3*Math.PI/2;
+							num=Math.floor(Math.random()*2)+1;
+							// move left
+							if(num == 1){
+								
+								while(angle>=Math.PI){
+									balls[i].centerX=50*Math.cos(angle)+pins[j].centerX;
+									balls[i].centerY=50*Math.sin(angle)+pins[j].centerY;
+									angle-=Math.PI/4;
+								}
+								
+							}
+							// move right
+							else if(num == 2){
+								
+								while(angle<=2*Math.PI){
+									balls[i].centerX=50*Math.cos(angle)+pins[j].centerX;
+									balls[i].centerY=50*Math.sin(angle)+pins[j].centerY;
+									angle+=Math.PI/4;
+								}
+								
+							}
+						}
+						else{
+							balls[i].centerY+=balls[i].speed;
+						}
+					}
+				}
+				
+				// print score 
+				context.fillStyle="black";
+				context.font = "20px Arial";
+				context.fillText("Score:".concat(points.toString()), 10, 25);
+				
+			}
+			
+			function score(){
+				
+				for(i=0;i<=balls.length-1;i++){
+				
+					if(balls[i].centerY>=1000 && !balls[i].scored){
+					
+						if(balls[i].centerX==25){
+							points+=1000;
+						}
+						else if(balls[i].centerX==75){
+							points+=900;
+						}
+						else if(balls[i].centerX==125){
+							points+=800;
+						}
+						else if(balls[i].centerX==175){
+							points+=700;
+						}
+						else if(balls[i].centerX==225){
+							points+=600;
+						}
+						else if(balls[i].centerX==275){
+							points+=500;
+						}
+						else if(balls[i].centerX==325){
+							points+=400;
+						}
+						else if(balls[i].centerX==375){
+							points+=300;
+						}
+						else if(balls[i].centerX==425){
+							points+=200;
+						}
+						else if(balls[i].centerX==475){
+							points+=100;
+						}
+						else if(balls[i].centerX==525){
+							points+=100;
+						}
+						else if(balls[i].centerX==575){
+							points+=200;
+						}
+						else if(balls[i].centerX==625){
+							points+=300;
+						}
+						else if(balls[i].centerX==675){
+							points+=400;
+						}
+					
+						else if(balls[i].centerX==725){
+							points+=500;
+						}
+						else if(balls[i].centerX==775){
+							points+=600;
+						}
+						else if(balls[i].centerX==825){
+							points+=700;
+						}
+						else if(balls[i].centerX==875){
+							points+=800;
+						}
+						else if(balls[i].centerX==925){
+							points+=900;
+						}
+						else if(balls[i].centerX==975){
+							points+=1000;
+						}
+						
+						balls[i].scored=true;
+					}
+				}
+			
+			}
+			
+			function deleteObjects(){
+				
+				// delete balls
+				for(i=0;i<=balls.length-1;i++){
+					
+					if(balls[i].centerX<=0 || balls[i].centerX>=1000 ||(balls[i].centerY>=1000 && balls[i].scored)){
+						
+						delete balls[i].centerX;
+						delete balls[i].centerY;
+						delete balls[i].radius;
+						delete balls[i].speed;
+						delete balls[i].scored;
+					
+					}
+				
+				}
+			
+			}
+			
+			window.onload=init;
+			
+		</script>
+	</body>
+	
+</html>
