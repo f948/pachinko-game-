@@ -2,6 +2,8 @@
 
 Description-The classic pachinko game in which players must drop balls into a maze and try to get those balls to land where they can score the most points.
 
+Video demonstration avaliable at https://www.youtube.com/watch?v=bFgYa7ZIpnY
+
 # Required
 
 A web browser to run the html file.
